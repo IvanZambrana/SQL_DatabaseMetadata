@@ -2,6 +2,7 @@
 package t1_r3_databasemetadata;
 
 import com.mysql.cj.jdbc.DatabaseMetaData;
+import com.mysql.cj.jdbc.result.ResultSetMetaData;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,6 +28,7 @@ public class Ejercicio5 {
         PreparedStatement insercion = null;
         Statement exConsulta = null;
         ResultSet resultado = null;
+        
         int option, row;
         
         try
@@ -48,7 +50,7 @@ public class Ejercicio5 {
            Connection conexion = null;
            Conectar con = new Conectar(sgdb, server, db, user, passw);
            conexion = con.getConnection();
-            
+           java.sql.DatabaseMetaData datos = conexion.getMetaData();
            
             //Creacion del menu
             while(!exit) {
@@ -73,7 +75,7 @@ public class Ejercicio5 {
                 switch(option){
                     case 1:
                         System.out.println("-MOSTRAR DATOS DEL SGDB Y BASE DE DATOS-");
-                        java.sql.DatabaseMetaData datos = conexion.getMetaData();
+                        
                         String nombre = datos.getDatabaseProductName();
                         String driver = datos.getDriverName();
                         String url = datos.getURL();
@@ -89,10 +91,19 @@ public class Ejercicio5 {
 
                     case 2:
                         System.out.println("-MOSTRAR DATOS DE TODAS LAS TABLAS-");
-
-
+                        resultado = datos.getTables(null, null, "%", null);
+                        java.sql.ResultSetMetaData rsmd = resultado.getMetaData();
+                        
+                        while(resultado.next())
+                        {
+                           
+                            System.out.println(resultado.getString(3));
+                           
+                        }
+                        
                         System.out.println("------------------------------");
                         break;
+
                     case 3:
                         System.out.println("-MOSTRAR DATOS DE UNA TABLA-");
 
