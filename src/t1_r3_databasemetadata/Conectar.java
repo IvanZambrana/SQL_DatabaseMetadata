@@ -30,7 +30,7 @@ public class Conectar {
             this.conexion = DriverManager.getConnection(url, user, passw);
             System.out.println("La conexion con oracle ha sido un exito");
         }
-            
+        else    
         {
             System.out.println("-ERROR-Ningun SGBD elejido");
             System.out.println("Saliendo del programa...");
