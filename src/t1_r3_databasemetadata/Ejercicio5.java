@@ -91,13 +91,13 @@ public class Ejercicio5 {
 
                     case 2:
                         System.out.println("-MOSTRAR DATOS DE TODAS LAS TABLAS-");
-                        resultado = datos.getTables(null, null, "%", null);
-                        java.sql.ResultSetMetaData rsmd = resultado.getMetaData();
+                        resultado = datos.getTables(db, null, "%", null);
+                        
                         
                         while(resultado.next())
                         {
                            
-                            System.out.println(resultado.getString(3));
+                            System.out.println("Catalogo: " + resultado.getString("TABLE_CAT") + " | Esquema: " + resultado.getString("TABLE_SCHEM") + " | Nombre de la tabla: " + resultado.getString("TABLE_NAME") + " | Tipo: " + resultado.getString("TABLE_TYPE"));
                            
                         }
                         
@@ -106,10 +106,41 @@ public class Ejercicio5 {
 
                     case 3:
                         System.out.println("-MOSTRAR DATOS DE UNA TABLA-");
-
+                        System.out.println("Inserte nombre de la tabla: ");
+                        sc.nextLine();
+                        String nombreTabla = sc.nextLine(); 
+                        
+                        //java.sql.ResultSetMetaData rsmd = resultado.getMetaData();
+                        if((nombreTabla.equals("")) && (nombreTabla.equalsIgnoreCase("null")))
+                        {
+                                System.out.println("-ERROR- El nombre de la tabla no puede ser nulo.");
+                                break;
+                        }
+                        else
+                        {
+                            resultado = datos.getTables(db, null, nombreTabla, null);
+                            resultado.next();
+                            if(resultado.getString("TABLE_NAME").equals(nombreTabla))
+                            {
+                               System.out.println("------------------------------");
+                               System.out.println("Informacion de la tabla " + nombreTabla);
+                               System.out.println("Catalogo: " + resultado.getString("TABLE_CAT") + " | Esquema: " + resultado.getString("TABLE_SCHEM") + " | Nombre de la tabla: " + resultado.getString("TABLE_NAME") + " | Tipo: " + resultado.getString("TABLE_TYPE")); 
+                            }
+                            else
+                            {
+                                System.out.println("-ERROR- La tabla no existe en la base de datos.");
+                                break;
+                            }
+                        
+                        }
+                        
+                           
+                           
+                        
 
                         System.out.println("------------------------------");
                         break;
+
                     case 4:
                         System.out.println("-MOSTRAR COLUMNAS DE UNA TABLA-");
 
