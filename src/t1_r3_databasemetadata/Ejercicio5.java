@@ -24,10 +24,11 @@ public class Ejercicio5 {
         boolean exit = false;
         
         //Variables útiles para el menú
-        
+        String nombreTabla;
         PreparedStatement insercion = null;
         Statement exConsulta = null;
         ResultSet resultado = null;
+        ResultSet result = null;
         
         int option, row;
         
@@ -74,6 +75,7 @@ public class Ejercicio5 {
                 //Manejo de opciones
                 switch(option){
                     case 1:
+                        //Mostrar datos del sgdb y base de datos
                         System.out.println("-MOSTRAR DATOS DEL SGDB Y BASE DE DATOS-");
                         
                         String nombre = datos.getDatabaseProductName();
@@ -96,9 +98,7 @@ public class Ejercicio5 {
                         
                         while(resultado.next())
                         {
-                           
-                            System.out.println("Catalogo: " + resultado.getString("TABLE_CAT") + " | Esquema: " + resultado.getString("TABLE_SCHEM") + " | Nombre de la tabla: " + resultado.getString("TABLE_NAME") + " | Tipo: " + resultado.getString("TABLE_TYPE"));
-                           
+                            System.out.println("Catalogo: " + resultado.getString("TABLE_CAT") + " | Esquema: " + resultado.getString("TABLE_SCHEM") + " | Nombre de la tabla: " + resultado.getString("TABLE_NAME") + " | Tipo: " + resultado.getString("TABLE_TYPE"));            
                         }
                         
                         System.out.println("------------------------------");
@@ -106,62 +106,159 @@ public class Ejercicio5 {
 
                     case 3:
                         System.out.println("-MOSTRAR DATOS DE UNA TABLA-");
+                        //Pedimos nombre de tabla
                         System.out.println("Inserte nombre de la tabla: ");
                         sc.nextLine();
-                        String nombreTabla = sc.nextLine(); 
+                        nombreTabla = sc.nextLine(); 
                         
                         //java.sql.ResultSetMetaData rsmd = resultado.getMetaData();
-                        if((nombreTabla.equals("")) && (nombreTabla.equalsIgnoreCase("null")))
-                        {
-                                System.out.println("-ERROR- El nombre de la tabla no puede ser nulo.");
-                                break;
-                        }
-                        else
+                        //Comprobamos que no sea nula
+                        if(!nombreTabla.equals(""))
                         {
                             resultado = datos.getTables(db, null, nombreTabla, null);
-                            resultado.next();
-                            if(resultado.getString("TABLE_NAME").equals(nombreTabla))
+                            //Comprobamos que existe
+                            if(resultado.next())
                             {
-                               System.out.println("------------------------------");
-                               System.out.println("Informacion de la tabla " + nombreTabla);
-                               System.out.println("Catalogo: " + resultado.getString("TABLE_CAT") + " | Esquema: " + resultado.getString("TABLE_SCHEM") + " | Nombre de la tabla: " + resultado.getString("TABLE_NAME") + " | Tipo: " + resultado.getString("TABLE_TYPE")); 
+                                System.out.println("------------------------------");
+                                System.out.println("Informacion de la tabla " + nombreTabla);
+                                System.out.println("Catalogo: " + resultado.getString("TABLE_CAT") + " | Esquema: " + resultado.getString("TABLE_SCHEM") + " | Nombre de la tabla: " + resultado.getString("TABLE_NAME") + " | Tipo: " + resultado.getString("TABLE_TYPE")); 
+                            
                             }
                             else
                             {
                                 System.out.println("-ERROR- La tabla no existe en la base de datos.");
                                 break;
                             }
-                        
                         }
-                        
-                           
-                           
-                        
-
+                        else
+                        {
+                            System.out.println("-ERROR- El nombre de la tabla no puede ser nulo.");
+                            break;
+                            
+                        }
+                      
                         System.out.println("------------------------------");
                         break;
 
-                    case 4:
-                        System.out.println("-MOSTRAR COLUMNAS DE UNA TABLA-");
 
+                    case 4:
+                        //Mostrar columnas de una tabla
+                        System.out.println("-MOSTRAR COLUMNAS DE UNA TABLA-");
+                        //Pedimos nombre de tabla
+                        System.out.println("Inserte nombre de la tabla: ");
+                        sc.nextLine();
+                        nombreTabla = sc.nextLine();
+                        
+                        //Comprobamos que no sea nula
+                        if(!nombreTabla.equals(""))
+                        {
+                            resultado = datos.getColumns(db, null, nombreTabla, null);
+                            //Comprobamos que existe
+                            if(resultado.next())
+                            {   System.out.println("Columnas de la tabla " + nombreTabla);
+                                System.out.println("------------------------------");
+                                while(resultado.next())
+                                {
+                                    System.out.println("Nombre de tabla: " + resultado.getString("TABLE_NAME") + " | Nombre columna: " + resultado.getString("COLUMN_NAME") + " | Tipo: " + resultado.getString("TYPE_NAME") + " | Tamaño: " + resultado.getInt("COLUMN_SIZE") + " | ¿Puede ser nula?: " + resultado.getString("IS_NULLABLE")); 
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("-ERROR- La tabla no existe en la base de datos.");
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("-ERROR- El nombre de la tabla no puede ser nulo.");
+                            break;
+                            
+                        }
 
                         System.out.println("------------------------------");
                         break;
                     case 5:
                         System.out.println("-MOSTRAR CLAVES PRIMARIAS DE UNA TABLA-");
-
+                        //Pedimos nombre de tabla
+                        System.out.println("Inserte nombre de la tabla: ");
+                        sc.nextLine();
+                        nombreTabla = sc.nextLine();
+                        
+                        //Comprobamos que no sea nula
+                        if(!nombreTabla.equals(""))
+                        {
+                            resultado = datos.getPrimaryKeys(db, null, nombreTabla);
+                            
+                            //Comprobamos que existe
+                           //if(resultado.next())
+                            //{
+                               System.out.println("Primary Keys de la tabla " + nombreTabla);
+                               System.out.println("------------------------------");
+                                //System.out.println("Nombre de tabla: " + resultado.getString("TABLE_NAME") + " | Nombre columna: " + resultado.getString("COLUMN_NAME") + " | Primary key: " + resultado.getString("PK_NAME")); 
+                                //result = datos.getColumns(db, null, nombreTabla, null);
+                               while(resultado.next())
+                                {
+                                    //if(!resultado.next())
+                                      //  break;
+                                    System.out.println("Nombre de tabla: " + resultado.getString("TABLE_NAME") + " | Nombre columna: " + resultado.getString("COLUMN_NAME") + " | Primary key: " + resultado.getString("PK_NAME")); 
+                                    //resultado.next();
+                                    
+                                }
+                               
+                            //}
+                            //else
+                            //{
+                            //    System.out.println("-ERROR- La tabla no existe en la base de datos.");
+                            //    break;
+                            //}
+                        }
+                        else
+                        {
+                            System.out.println("-ERROR- El nombre de la tabla no puede ser nulo.");
+                            break;
+                            
+                        }
 
                         System.out.println("------------------------------");
                         break;
                     case 6:
                         System.out.println("-MOSTRAR CLAVES EXTERNAS ASOCIADAS A LA CLAVE PRIMARIA DE UNA TABLA-");
-
+                        System.out.println("Inserte nombre de la tabla: ");
+                        sc.nextLine();
+                        nombreTabla = sc.nextLine();
+                        
+                        //Comprobamos que no sea nula
+                        if(!nombreTabla.equals(""))
+                        {
+                            resultado = datos.getImportedKeys(db, null, nombreTabla);
+                            
+                            
+                               System.out.println("Foreign Keys de la tabla " + nombreTabla);
+                               System.out.println("------------------------------");
+                                while(resultado.next())
+                                {
+                                   System.out.println("Nombre de tabla de la PK: " + resultado.getString("PKTABLE_NAME") + " | Columna Primary Key: " + resultado.getString("PKCOLUMN_NAME") + " | Columna Foreign key: " + resultado.getString("FKCOLUMN_NAME")); 
+                                }
+                        }
+                        else
+                        {
+                            System.out.println("-ERROR- El nombre de la tabla no puede ser nulo.");
+                            break;
+                            
+                        }
 
                         System.out.println("------------------------------");
                         break;
                     case 7:
                         System.out.println("-MOSTRAR PROCEDIMIENTOS ALMACENADOS-");
-
+                        resultado = datos.getProcedures(db, null, null);
+                        System.out.println("Procedimientos almacenados de la base de datos " + db);
+                        System.out.println("------------------------------");
+                        while(resultado.next())
+                        {
+                           System.out.println("Nombre del procedimiento: " + resultado.getString("PROCEDURE_NAME") + " | Comentarios: " + resultado.getString("REMARKS")); 
+                        }
+                        
 
                         System.out.println("------------------------------");
                         break;
